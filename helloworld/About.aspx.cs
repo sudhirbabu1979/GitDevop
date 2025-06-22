@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using helloworld; // Ensure this is present to reference Student class in Student.cs
 
 namespace helloworld
 {
@@ -11,17 +12,14 @@ namespace helloworld
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
-        }
+        }   
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            // Get values from textboxes
             string name = txtName.Text.Trim();
             string age = txtAge.Text.Trim();
             string email = txtEmail.Text.Trim();
 
-            // Simple validation (optional)
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(age) || string.IsNullOrEmpty(email))
             {
                 lblMessage.ForeColor = System.Drawing.Color.Red;
@@ -29,18 +27,27 @@ namespace helloworld
                 return;
             }
 
-            // Display the saved data (replace with DB save logic as needed)
+            // Retrieve the student list from Session or create a new one
+            var students = Session["Students"] as List<Student> ?? new List<Student>();
+
+            // Add the new student
+            students.Add(new Student { Name = name, Age = age, Email = email });
+
+            // Save the list back to Session
+            Session["Students"] = students;
+
             lblMessage.ForeColor = System.Drawing.Color.Green;
             lblMessage.Text = $"Student Saved: {name}, Age: {age}, Email: {email}";
         }
 
         protected void btnClear_Click(object sender, EventArgs e)
         {
-            // Clear all fields and message
             txtName.Text = "";
             txtAge.Text = "";
             txtEmail.Text = "";
             lblMessage.Text = "";
         }
     }
+
+   
 }
